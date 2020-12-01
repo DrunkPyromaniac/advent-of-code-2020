@@ -25,9 +25,10 @@ unsigned int *read_entries(unsigned int *sz)
 
 int main(int argc, char *argv[])
   {
-  unsigned int sz, i, j, *entries = read_entries(&sz);
+  unsigned int sz, i, j, k, *entries = read_entries(&sz);
   for (i = 0; i < sz; i++)
     for (j = i + 1; j < sz; j++)
-      if (entries[i] + entries[j] == 2020)
-        printf("P: %d\n", entries[i] * entries[j]);
+      for (k = j + 1; k < sz; k++)
+        if (entries[i] + entries[j] + entries[k] == 2020)
+          printf("P: %d\n", entries[i] * entries[j] * entries[k]);
   }
