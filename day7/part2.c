@@ -8,6 +8,7 @@
 struct sub_bag
 	{
 	unsigned int count;
+	struct bag *b;
 	char *adj, *color;
 	};
 
@@ -58,22 +59,29 @@ struct bag *read_entries(unsigned int *sz)
 			scanf("no other bags. ");
 		i++;
 		}
+	for (c = 0; c < i; c++)
+		{
+		for (count = 0; count < ret[c].sz_bags; count++)
+			{
+			for (size = 0; size < i; size++)
+				if (!strcmp(ret[c].bags[count].adj, ret[size].adj) && !strcmp(ret[c].bags[count].color, ret[size].color))
+					{
+					ret[c].bags[count].b = ret + size;
+					break;
+					}
+			}
+		}
 	if (sz)
 		*sz = i;
 	return ret;
 	}
 
-unsigned int count_in(struct bag *bags, struct bag *b, unsigned int sz)
+unsigned int count_in(struct bag *b)
 	{
-	unsigned int ret = 0, i, j;
+	unsigned int ret = 0, i;
 
 	for (i = 0; i < b->sz_bags; i++)
-		{
-		for (j = 0; j < sz; j++)
-			if (!strcmp(b->bags[i].adj, bags[j].adj) && !strcmp(b->bags[i].color, bags[j].color))
-				break;
-		ret += b->bags[i].count * (count_in(bags, bags + j, sz) + 1);
-		}
+		ret += b->bags[i].count * (count_in(b->bags[i].b) + 1);
 	return ret;
 	}
 
@@ -84,5 +92,5 @@ int main(int argc, char *argv[])
 	for (i = 0; i < sz; i++)
 		if (!strcmp(b[i].adj, "shiny") && !strcmp(b[i].color, "gold"))
 			break;
-	printf("C = %u\n", count_in(b, b + i, sz));
+	printf("C = %u\n", count_in(b + i));
 	}

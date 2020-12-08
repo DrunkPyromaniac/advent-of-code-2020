@@ -8,6 +8,7 @@
 struct sub_bag
 	{
 	unsigned int count;
+	struct bag *b;
 	char *adj, *color;
 	};
 
@@ -58,24 +59,33 @@ struct bag *read_entries(unsigned int *sz)
 			scanf("no other bags. ");
 		i++;
 		}
+	for (c = 0; c < i; c++)
+		{
+		for (count = 0; count < ret[c].sz_bags; count++)
+			{
+			for (size = 0; size < i; size++)
+				if (!strcmp(ret[c].bags[count].adj, ret[size].adj) && !strcmp(ret[c].bags[count].color, ret[size].color))
+					{
+					ret[c].bags[count].b = ret + size;
+					break;
+					}
+			}
+		}
 	if (sz)
 		*sz = i;
 	return ret;
 	}
 
-unsigned char can_contain(char *adj, char *color, struct bag *bags, struct bag *b, unsigned int sz)
+unsigned char can_contain(char *adj, char *color, struct bag *b)
 	{
 	unsigned char ret = 0;
-	unsigned int i, j;
+	unsigned int i;
 
 	for (i = 0; i < b->sz_bags; i++)
 		{
 		if (!strcmp(adj, b->bags[i].adj) && !strcmp(color, b->bags[i].color))
 			return 1;
-		for (j = 0; j < sz; j++)
-			if (!strcmp(b->bags[i].adj, bags[j].adj) && !strcmp(b->bags[i].color, bags[j].color))
-				break;
-		if (j < sz && can_contain(adj, color, bags, bags + j, sz))
+		if (can_contain(adj, color, b->bags[i].b))
 			ret = 1;
 		}
 	return ret;
@@ -83,9 +93,9 @@ unsigned char can_contain(char *adj, char *color, struct bag *bags, struct bag *
 
 int main(int argc, char *argv[])
 	{
-	unsigned int sz, i, c = 0, j;
+	unsigned int sz, i, c = 0;
 	struct bag *b = read_entries(&sz);
 	for (i = 0; i < sz; i++)
-		c += can_contain("shiny", "gold", b, b + i, sz);
+		c += can_contain("shiny", "gold", b + i);
 	printf("C = %d\n", c);
 	}
