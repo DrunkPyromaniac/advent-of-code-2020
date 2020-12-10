@@ -25,7 +25,7 @@ unsigned int *read_entries(unsigned int *sz)
 
 int main(int argc, char *argv[])
   {
-  unsigned int sz, i, j, k, l, *entries = read_entries(&sz), sum, min, max;
+  unsigned int sz, i, j, k, *entries = read_entries(&sz), sum, min, max;
 	unsigned char good;
   for (i = 25; i < sz; i++, good = 0)
 		{
